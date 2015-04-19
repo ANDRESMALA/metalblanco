@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="MetalBlancoPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>metalblanco.map.com.DetalleDeCotizacion</class>
+    <class>metalblanco.map.com.NotaDeVenta</class>
+    <class>metalblanco.map.com.Productos</class>
+    <class>metalblanco.map.com.EstadoDelPago</class>
+    <class>metalblanco.map.com.Ciudad</class>
+    <class>metalblanco.map.com.DetalleNotaDeVenta</class>
+    <class>metalblanco.map.com.Cotizacion</class>
+    <class>metalblanco.map.com.DetalleTempNot</class>
+    <class>metalblanco.map.com.Usuario</class>
+    <class>metalblanco.map.com.DetalleTempCot</class>
+    <class>metalblanco.map.com.DatosEmpresa</class>
+    <class>metalblanco.map.com.Proveedor</class>
+    <class>metalblanco.map.com.Cliente</class>
+    <class>metalblanco.map.com.Comuna</class>
+    <class>metalblanco.map.com.TipoDeUsuario</class>
+    <class>metalblanco.map.com.DetalleTempFactura</class>
+    <class>metalblanco.map.com.Factura</class>
+    <class>metalblanco.map.com.DetalleFactura</class>
+    <class>metalblanco.map.com.MetodoDePago</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/metalblanco?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value=""/>
+    </properties>
+  </persistence-unit>
+</persistence>

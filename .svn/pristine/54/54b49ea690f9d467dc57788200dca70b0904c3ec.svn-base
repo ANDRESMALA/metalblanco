@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:p="http://primefaces.org/ui">
+    
+    <h:form>  
+       
+        <h:outputLabel for="user" value="#{jSFMusuario.user.nombre}" style="font-weight:bold"  />
+        <p:commandButton id="cerrar" value="LOGOUT" style="margin:0" action="#{authBean.logout()}" />
+     
+    </h:form>  
+  
+    
+
+  
+</ui:composition> 

@@ -1,0 +1,153 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package controladores;
+
+import modelo.UserBean;
+import java.io.IOException;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+
+/**
+ *
+ * @author andresmalagueno
+ */
+@ManagedBean
+@RequestScoped
+public class AuthBean {
+
+   public final static String USER_KEY="auth_user";
+
+    private String user;
+    private String password;
+    private String message;
+
+    /** Creates a new instance of AuthBean */
+    public AuthBean() {
+    }
+
+    /**
+     * @return the user
+     */
+    public String getUser() {
+        return user;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * @param message the message to set
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * 
+     * @param e
+     * @throws IOException
+     */
+    public void doLogin(ActionEvent e) throws IOException{
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext extContext = context.getExternalContext();
+        String url = "";
+        
+        if(isAdmin(user, password)==true)
+        {
+//            url = extContext.encodeActionURL( context.getApplication().getViewHandler().getActionURL(context, "/administration/administracion.faces"));
+              url = extContext.encodeActionURL( context.getApplication().getViewHandler().getActionURL(context, "/principal/index"));
+            extContext.getSessionMap().put(USER_KEY, new UserBean(user, "admin"));
+            extContext.redirect(url);
+            return;
+            
+        }
+        if(isSuperAdmin(user, password))
+        {
+//            url = extContext.encodeActionURL(context.getApplication().getViewHandler().getActionURL(context, "/superadmin/SuperAdmistracion.faces"));
+            url = extContext.encodeActionURL( context.getApplication().getViewHandler().getActionURL(context, "/principal/index"
+                    + ""));
+            
+            extContext.getSessionMap().put(USER_KEY, new UserBean(user, "superadmin"));
+            extContext.redirect(url);
+            return;
+        }
+        message="Usuario y/o clave invalida";
+    }
+
+    /**
+     *
+     * @param user
+     * @param password
+     * @return
+     */
+    private boolean isAdmin(String user, String password){
+        return user.equals("admin") && password.equals("admin");
+        //Aqui se puede validar hacia una base de datos
+    }
+
+    /**
+     *
+     * @param user
+     * @param password
+     * @return
+     */
+    private boolean isSuperAdmin(String user, String password){
+        return user.equals("superadmin") && password.equals("superadmin");
+        //Aqui se puede validar hacia una base de datos
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public String getLoggedUserName(){
+        return ((UserBean)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(USER_KEY)).toString();
+    }
+
+    /**
+     * 
+     * @throws IOException
+     */
+    public void logout() throws IOException{
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext extContext = context.getExternalContext();
+        extContext.getSessionMap().remove(USER_KEY);
+        String url = extContext.encodeActionURL(context.getApplication().getViewHandler().getActionURL(context, "/login.faces"));
+        extContext.redirect(url);
+    }
+    
+    
+    
+    
+}

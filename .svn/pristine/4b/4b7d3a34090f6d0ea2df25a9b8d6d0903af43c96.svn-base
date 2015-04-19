@@ -1,0 +1,161 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package metalblanco.map.com;
+
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author andresmalagueno
+ */
+@Entity
+@Table(name = "USUARIO")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
+    @NamedQuery(name = "Usuario.findByIdUsuario", query = "SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario"),
+    @NamedQuery(name = "Usuario.findByNombre", query = "SELECT u FROM Usuario u WHERE u.nombre = :nombre"),
+    @NamedQuery(name = "Usuario.findByUsername", query = "SELECT u FROM Usuario u WHERE u.username = :username"),
+    @NamedQuery(name = "Usuario.findByPassword", query = "SELECT u FROM Usuario u WHERE u.password = :password")})
+public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id_usuario")
+    private Integer idUsuario;
+    @Column(name = "nombre")
+    private String nombre;
+    @Column(name = "username")
+    private String username;
+    @Column(name = "password")
+    private String password;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "uSUARIOidusuario")
+    private Collection<Cotizacion> cotizacionCollection;
+    @JoinColumn(name = "TIPO_DE_USUARIO_id_tipo_de_usuario", referencedColumnName = "id_tipo_de_usuario")
+    @ManyToOne(optional = false)
+    private TipoDeUsuario tIPODEUSUARIOidtipodeusuario;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "uSUARIOidusuario")
+    private Collection<NotaDeVenta> notaDeVentaCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "uSUARIOidusuario")
+    private Collection<Productos> productosCollection;
+
+    public Usuario() {
+    }
+
+    public Usuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @XmlTransient
+    public Collection<Cotizacion> getCotizacionCollection() {
+        return cotizacionCollection;
+    }
+
+    public void setCotizacionCollection(Collection<Cotizacion> cotizacionCollection) {
+        this.cotizacionCollection = cotizacionCollection;
+    }
+
+    public TipoDeUsuario getTIPODEUSUARIOidtipodeusuario() {
+        return tIPODEUSUARIOidtipodeusuario;
+    }
+
+    public void setTIPODEUSUARIOidtipodeusuario(TipoDeUsuario tIPODEUSUARIOidtipodeusuario) {
+        this.tIPODEUSUARIOidtipodeusuario = tIPODEUSUARIOidtipodeusuario;
+    }
+
+    @XmlTransient
+    public Collection<NotaDeVenta> getNotaDeVentaCollection() {
+        return notaDeVentaCollection;
+    }
+
+    public void setNotaDeVentaCollection(Collection<NotaDeVenta> notaDeVentaCollection) {
+        this.notaDeVentaCollection = notaDeVentaCollection;
+    }
+
+    @XmlTransient
+    public Collection<Productos> getProductosCollection() {
+        return productosCollection;
+    }
+
+    public void setProductosCollection(Collection<Productos> productosCollection) {
+        this.productosCollection = productosCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idUsuario != null ? idUsuario.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Usuario)) {
+            return false;
+        }
+        Usuario other = (Usuario) object;
+        if ((this.idUsuario == null && other.idUsuario != null) || (this.idUsuario != null && !this.idUsuario.equals(other.idUsuario))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "metalblanco.map.com.Usuario[ idUsuario=" + idUsuario + " ]";
+    }
+    
+}

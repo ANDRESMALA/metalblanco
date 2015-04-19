@@ -1,0 +1,113 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package dao;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import metalblanco.map.com.DetalleTempCot;
+
+/**
+ *
+ * @author andresmalagueno
+ */
+public class LineaTemporalDao implements Serializable {
+    
+    private EntityManagerFactory emf=null;
+    private EntityManager em=null;
+
+    public LineaTemporalDao() {
+    }
+    
+    public void init(){
+    
+     emf=Persistence.createEntityManagerFactory("MetalBlancoPU");
+     em=emf.createEntityManager();
+    
+    }
+    
+    public void close(){
+        if(emf!=null){
+        em.close();
+        }
+    }
+    
+   public void insertar(DetalleTempCot detalleTemp){
+        
+                em.getTransaction().begin();
+                em.persist(detalleTemp);
+                em.getTransaction().commit();
+       
+   }
+   
+   public void modificardET(DetalleTempCot detalle){
+       em.getTransaction().begin();
+       Query query = em.createQuery("SELECT d FROM DetalleTempCot d WHERE d.codProducto = :codProducto",DetalleTempCot.class);
+       DetalleTempCot d=(DetalleTempCot)query.setParameter("codProducto",detalle.getCodProducto()).getSingleResult();
+       d.setCantidad(detalle.getCantidad()+d.getCantidad());
+       d.setSubtotal(detalle.getSubtotal()+d.getSubtotal());
+       
+       em.merge(d);
+       em.getTransaction().commit();
+        
+ }
+   
+   public boolean validardet(String codigo){
+         this.init();
+         DetalleTempCot p=null;
+     boolean respuesta=false;//respuesta
+            Query query = em.createQuery("SELECT d FROM DetalleTempCot d WHERE d.codProducto = :codProducto");
+            try{
+                p=(DetalleTempCot)query.setParameter("codProducto",codigo).getSingleResult();
+            }catch(Exception e){
+                p=null;
+            }
+          if (p==null) {
+            respuesta=true;//respuesta que no existe
+          }  
+          this.close();
+     return respuesta;
+    }
+    
+   public List<DetalleTempCot> findAlldetCotTemp() {
+            this.init();
+            List<DetalleTempCot> detalleTemp;
+            Query query = em.createQuery("SELECT d FROM DetalleTempCot d");
+            detalleTemp=query.getResultList();
+            
+            return detalleTemp;
+    }
+   public void eliminarLinea(int codigo){
+            em.getTransaction().begin();
+            DetalleTempCot detalleTemp;
+            detalleTemp = em.find(DetalleTempCot.class,codigo);
+            em.remove(detalleTemp);
+            em.getTransaction().commit();
+   }
+   
+   
+    public double sumatotal(){
+        Double sum=0.0;
+        
+        this.init();
+        em = this.emf.createEntityManager();
+        if(em.createQuery("SELECT SUM(d.subtotal) FROM DetalleTempCot d",Double.class).getSingleResult()!=null){
+        sum=em.createQuery("SELECT SUM(d.subtotal) FROM DetalleTempCot d",Double.class).getSingleResult();
+        }
+        return sum;
+    }
+    
+    public void eliminarTodo(){
+        this.init();
+        em.getTransaction().begin();
+        int delete= em.createQuery("DELETE FROM DetalleTempCot").executeUpdate();
+        em.getTransaction().commit();
+        this.close();
+    }  
+}

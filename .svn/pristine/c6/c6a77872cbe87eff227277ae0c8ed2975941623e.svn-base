@@ -1,0 +1,110 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package metalblanco.map.com;
+
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author andresmalagueno
+ */
+@Entity
+@Table(name = "METODO_DE_PAGO")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "MetodoDePago.findAll", query = "SELECT m FROM MetodoDePago m"),
+    @NamedQuery(name = "MetodoDePago.findByIdMetodoDePago", query = "SELECT m FROM MetodoDePago m WHERE m.idMetodoDePago = :idMetodoDePago"),
+    @NamedQuery(name = "MetodoDePago.findByMetodo", query = "SELECT m FROM MetodoDePago m WHERE m.metodo = :metodo")})
+public class MetodoDePago implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id_metodo_de_pago")
+    private Integer idMetodoDePago;
+    @Basic(optional = false)
+    @Column(name = "metodo")
+    private String metodo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mETODODEPAGOidmetododepago")
+    private Collection<Factura> facturaCollection;
+
+    public MetodoDePago() {
+    }
+
+    public MetodoDePago(Integer idMetodoDePago) {
+        this.idMetodoDePago = idMetodoDePago;
+    }
+
+    public MetodoDePago(Integer idMetodoDePago, String metodo) {
+        this.idMetodoDePago = idMetodoDePago;
+        this.metodo = metodo;
+    }
+
+    public Integer getIdMetodoDePago() {
+        return idMetodoDePago;
+    }
+
+    public void setIdMetodoDePago(Integer idMetodoDePago) {
+        this.idMetodoDePago = idMetodoDePago;
+    }
+
+    public String getMetodo() {
+        return metodo;
+    }
+
+    public void setMetodo(String metodo) {
+        this.metodo = metodo;
+    }
+
+    @XmlTransient
+    public Collection<Factura> getFacturaCollection() {
+        return facturaCollection;
+    }
+
+    public void setFacturaCollection(Collection<Factura> facturaCollection) {
+        this.facturaCollection = facturaCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idMetodoDePago != null ? idMetodoDePago.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof MetodoDePago)) {
+            return false;
+        }
+        MetodoDePago other = (MetodoDePago) object;
+        if ((this.idMetodoDePago == null && other.idMetodoDePago != null) || (this.idMetodoDePago != null && !this.idMetodoDePago.equals(other.idMetodoDePago))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "metalblanco.map.com.MetodoDePago[ idMetodoDePago=" + idMetodoDePago + " ]";
+    }
+    
+}

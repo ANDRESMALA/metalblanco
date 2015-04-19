@@ -1,0 +1,19 @@
+<title>log</title>
+     
+<h:body>  
+      <p>Login to access secure pages:</p>  
+      <h:messages />  
+      <h:form id="loginForm">  
+           <h:panelGrid columns="2">  
+                <h:outputLabel for="username" value="Username:" />  
+                <h:inputText id="username" value="#{authBean.user}" />  
+                                  
+                <h:outputLabel for="password" value="Password:" />  
+                <h:inputSecret id="password" value="#{authBean.password}" />  
+                                  
+                <h:commandButton id="loginButton" value="Login" action="#{authBean.doLogin}" />  
+           </h:panelGrid>  
+      </h:form>  
+ </h:body>  
+    
+    

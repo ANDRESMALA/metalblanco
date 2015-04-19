@@ -1,0 +1,263 @@
+<ui:composition template="../templates/template.xhtml"
+xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:define name="cotizaciones">
+        
+        <h:form id="cotizaciones">
+            <p:growl   autoUpdate="true" sticky="true"   showDetail="true"  />
+            <p:panel id="titulo">
+                <h1>Cotizaciones</h1>
+                
+                
+                
+                
+                
+                
+            </p:panel>
+            
+            <p:panel id="cabecera" header="CLIENTE" toggleable="true" toggleSpeed="500" collapsed="false" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
+                
+                
+               
+                <h:panelGrid id="panel1" columns="3" cellpadding="5"> 
+                        <h:outputLabel value="BUSCAR:" style="font-weight:bold"  />  
+                        
+                        <p:commandButton  type="button" icon="ui-icon-search" onclick="PF('dlg1').show();" />
+                        
+                        <p:dialog header="LISTA DE CLIENTES " widgetVar="dlg1" modal="true" height="150" width="700">
+                            <p:dataTable var="clie" value="#{jSFMCotizaciones.listaClientes}" rowKey="#{clie.rutCliente}" rows="5" paginator="true" selectionMode="single">
+                                
+                                <p:ajax event="rowSelect" listener="#{jSFMCotizaciones.onRowSelectCli}"  update=":cotizaciones" />
+                                    
+                                <p:column headerText="Rut Cliente" filterBy="#{clie.rutCliente}">
+                                        <h:outputText value="#{clie.rutCliente}" />
+                                    </p:column>
+
+                                <p:column headerText="Nombre Comercial" filterBy="#{clie.nomComercial}">
+                                        <h:outputText value="#{clie.nomComercial}" />
+                                    </p:column>
+
+                                <p:column headerText="Nombre Contacto" filterBy="#{clie.nomComercial}">
+                                        <h:outputText value="#{clie.nomContacto}" />
+                                    </p:column>
+
+                                    <p:column headerText="Email" filterBy="#{clie.email}">
+                                        <h:outputText value="#{clie.email}"  />
+                                    </p:column>
+                            </p:dataTable>
+                            
+                        </p:dialog>
+                        
+                        
+                </h:panelGrid>
+                
+                <h:panelGrid id="panel1x" columns="4" cellpadding="5"> 
+                        <h:outputLabel for="rutCli" value="Rut Cliente:" style="font-weight:bold"  />  
+                        <h:inputText id="rutCli" value="#{jSFMCotizaciones.cliente.rutCliente}" maxlength="10"/> 
+                        
+                </h:panelGrid>
+                
+                <h:panelGrid id="panel2" columns="4" cellpadding="5">         
+                        
+                        <h:outputLabel for="nombreCom" value="Nombre Comercial:" style="font-weight:bold"/>  
+                        <h:inputText id="nombreCom" value="#{jSFMCotizaciones.cliente.nomComercial}"  readonly="true" size="50"/> 
+                        
+                        <h:outputLabel for="direccion" value="Direccion:" style="font-weight:bold"/>  
+                        <h:inputText id="direccion" value="#{jSFMCotizaciones.cliente.direccion}"  readonly="true" size="50"/> 
+                        
+                        <h:outputLabel for="telefono" value="Teléfono:" style="font-weight:bold"/>  
+                        <h:inputText id="telefono" value="#{jSFMCotizaciones.cliente.telefono}"  readonly="true" size="10"/> 
+                        
+                        <h:outputLabel for="email" value="Email:" style="font-weight:bold"/>  
+                        <h:inputText id="email" value="#{jSFMCotizaciones.cliente.email}"  readonly="true" size="30"/>
+                        
+                        <h:outputLabel for="nombreContacto" value="Nombre Contacto:" style="font-weight:bold"/>  
+                        <h:inputText id="nombreContacto" value="#{jSFMCotizaciones.cliente.nomContacto}"  readonly="true" size="50"/>
+                        
+                        <h:outputLabel for="Comuna" value="Comuna:" style="font-weight:bold"/>  
+                        <h:inputText id="Comuna" value="#{jSFMCotizaciones.comuna.nomComuna}"  readonly="true" size="20"/>
+                        
+                </h:panelGrid>
+                
+                
+            </p:panel>
+            <p:panel id="lineaPedidos" header="PEDIDOS" toggleable="true" toggleSpeed="500" collapsed="false" closeSpeed="500" widgetVar="lineaPedidos" style="margin-bottom:20px">
+                
+                <h:panelGrid id="panel3" columns="4" cellpadding="2">  
+                        <h:outputLabel for="codPro" value="Ingrerse Codigo:"  style="font-weight:bold"  />  
+                        <p:inputText id="codPro" value="#{jSFMCotizaciones.codigoProducto}" size="12" style="background-color: #ccffff"/>
+                       
+                        
+
+                        <p:commandButton  type="button" icon="ui-icon-search" onclick="PF('dlg2').show();" action="#{jSFMCotizaciones.traerAllProducto()}" />
+                        
+                        <p:dialog header="LISTA DE PRODUCTOS" widgetVar="dlg2" modal="true" height="150" width="700">
+                            <p:dataTable var="pro" value="#{jSFMCotizaciones.listaProductos}" rowKey="#{pro.codProducto}" rows="5" paginator="true" selectionMode="single">
+                                
+                                <p:ajax event="rowSelect" listener="#{jSFMCotizaciones.onRowSelect}"  update=":cotizaciones:lineaPedidos" />
+                                <p:ajax event="rowUnselect" listener="#{jSFMCotizaciones.onRowUnselect}"  />
+                                    <p:column headerText="Codigo">
+                                        <h:outputText value="#{pro.codProducto}" />
+                                    </p:column>
+                                
+                                    <p:column headerText="Categoria" filterBy="#{pro.CATEGORIAidcategoria.nombreCategoria}" 
+                                          filterOptions="#{jSFMCotizaciones.categoriaOptions}"  
+                                          filterMatchMode="exact">  
+                                          <h:outputText value="#{pro.CATEGORIAidcategoria.nombreCategoria}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Descripcion">
+                                        <h:outputText value="#{pro.descripcionProducto}" />
+                                    </p:column>
+
+                                    <p:column headerText="Descuento %">
+                                        <h:outputText value="#{pro.descuento}" style="float:right">
+                                            <f:convertNumber  currencySymbol="%" groupingUsed="true"
+                                        maxFractionDigits="2" type="number"/>
+                                        </h:outputText>
+                                    </p:column>
+                                        
+                                    <p:column headerText="Precio Unit.">
+                                        <h:outputText value="#{pro.valorNetoDeVenta}" style="float:right">
+                                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                                         maxFractionDigits="0" type="currency"  />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            
+                        </p:dialog> 
+                  </h:panelGrid>
+                
+                  <h:panelGrid id="panel3x" columns="4" cellpadding="2">       
+                        <h:outputLabel for="codigoPro" value="Codigo:"  style="font-weight:bold"  />  
+                        <h:inputText id="codigoPro" value="#{jSFMCotizaciones.codigo}" readonly="true"/>
+                        
+                        <h:outputLabel for="descripcionPro" value="Descripcion:" style="font-weight:bold"   />  
+                        <h:inputText  id="descripcionPro" value="#{jSFMCotizaciones.descripcion}" readonly="true" size="80"/> 
+                </h:panelGrid>
+                
+                <h:panelGrid id="panel4" columns="8" cellpadding="10">  
+                        
+                       <h:outputLabel for="valorUnit" value="Precio:" style="font-weight:bold"  />  
+                       <h:inputText id="valorUnit" value="#{jSFMCotizaciones.precio}" readonly="true" style=" text-align:right">
+                       <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                       </h:inputText>
+                       <h:outputLabel for="cantidad" value="Cantidad:" style="font-weight:bold"  />  
+                       <p:inputText id="cantidad" value="#{jSFMCotizaciones.cantidad}" size="5" style=" text-align:right;background-color: #ccffff" />
+                       
+                       <h:outputLabel for="descuento" value="Descuento:" style="font-weight:bold"  />  
+                       <h:inputText id="descuento" value="#{jSFMCotizaciones.descuento}" readonly="true" style=" text-align:right" >
+                       <f:convertNumber currencySymbol="%" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                       </h:inputText>
+                       
+                       <h:outputLabel for="subtotal" value="Sub Total:" style="font-weight:bold"  />  
+                       <h:inputText id="subtotal" value="#{jSFMCotizaciones.subtotal}"  readonly="true" style=" text-align:right" >
+                       <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                       </h:inputText>
+                    
+                    
+                       
+                </h:panelGrid>
+                <h:panelGrid id="panel5" columns="4" cellpadding="5">
+                    <p:commandButton id="calcular" value="CALCULAR" style="margin:0" action="#{jSFMCotizaciones.calcularSubtotales()}" update=":cotizaciones" />
+                        <p:commandButton id="limpiar" value="LIMPIAR" style="margin:0" action="#{jSFMCotizaciones.limpiarProd()}" update=":cotizaciones" />
+                        <p:commandButton id="insertar" value="AGREGAR" style="margin:0" action="#{jSFMCotizaciones.ingresarLinea()}" update=":cotizaciones" />
+                </h:panelGrid>
+                
+            </p:panel>
+            <p:panel id="tablaPedidos" style=" width:800">
+                
+                
+                <p:dataTable id="tablaPedido"  var="ltp" value="#{jSFMCotizaciones.listatemporal}" rowKey="#{ltp.idDetTemCot}" widgetVar=""  
+                             paginator="true" rows="5"    resizableColumns="false" rowsPerPageTemplate="5,10,15">
+                
+               
+                <p:column headerText="CODIGO" >  
+                    <h:outputText value="#{ltp.codProducto}"  />  
+                </p:column> 
+                <p:column headerText="DESCRIPCION" >  
+                   <h:outputText value="#{ltp.descripcion}" />  
+                </p:column> 
+                <p:column headerText="CANTIDAD"  >  
+                    <h:outputText value="#{ltp.cantidad}" style="float:right"/>  
+                </p:column>     
+                <p:column headerText="PRECIO UNIT" >  
+                    <h:outputText value="#{ltp.valorUnitario}" style="float:right">  
+                    <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="DESCUENTO" >  
+                    <h:outputText  value="#{ltp.descuento}" style="float:right"> 
+                    <f:convertNumber currencySymbol="" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:outputText>
+                </p:column>  
+                <p:column headerText="SUB TOTAL" >  
+                    <h:outputText  value="#{ltp.subTotal}"  style="float:right;" >
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                </h:outputText>
+                    
+                </p:column>    
+                    
+  
+                <p:column headerText="EDICION"  width="60" style="width:32px">  
+                    
+                        <p:commandButton id="Borrar"  icon="ui-icon-close" style="margin:0" action="#{jSFMCotizaciones.eliminarLinea(ltp)}" update=":cotizaciones" />
+                 
+                </p:column>  
+            </p:dataTable> 
+                
+                
+            </p:panel>
+            <p:panel id="totales" style="float: right">
+                
+                <p:panelGrid columns="3" style="width: 100%">
+                    <h:inputText id="v" value="" disabled="true"  size="160"/>
+                      
+                    <h:outputLabel for="neto" value="NETO: "/>
+                    <h:inputText  id="neto" value="#{jSFMCotizaciones.neto}" readonly="true" style=" text-align:right">
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:inputText>
+                    <h:inputText id="de" value="" disabled="true"  size="160"/>
+                      
+                    <h:outputLabel for="iva" value="IVA: "/>
+                    <h:inputText  id="iva" value="#{jSFMCotizaciones.iva}" readonly="true" style=" text-align:right">
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:inputText>
+                    
+                    <h:inputText id="Ee" value="" disabled="true"  size="160"/>
+                    <h:outputLabel for="total" value="TOTAL: "/>
+                    <h:inputText  id="total" value="#{jSFMCotizaciones.total}" readonly="true" style=" text-align:right">
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:inputText>
+                    
+                    </p:panelGrid>
+            </p:panel>
+            
+            <p:panel id="botonera">
+                
+                <h:panelGrid id="panel6" columns="4" cellpadding="5">
+                    <p:commandButton id="agregarCot" value="AGREGAR COTIZACION" style="margin:0"  action="#{jSFMCotizaciones.agregarCot()}" update=":cotizaciones"/>
+                    <p:commandButton id="limpiarCot" value="LIMPIAR COTIZACION" style="margin:0" action="#{jSFMCotizaciones.limpiarCot()}" update=":cotizaciones" />  
+                     <p:commandButton action="#{jSFMCotizaciones.generateReport('reportReference')}"
+                                        value="GENERAR INFORME" ajax="false"  />
+         
+   
+                </h:panelGrid>
+            </p:panel>
+            
+        </h:form>
+        
+    </ui:define>
+</ui:composition> 

@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:p="http://primefaces.org/ui">
+    
+   <h:form>  
+      <p:growl id="messages"/>  
+         
+      
+      <p:panelMenu  >  
+        <p:submenu label="COTIZACION">  
+            <p:menuitem value="CREAR" url="/principal/publica/cotizaciones.faces" />
+            <p:menuitem value="MODIFICAR" url="/principal/publica/modcotizacion.faces" />
+        </p:submenu> 
+        <p:submenu label="MANTENIMIENTO"  >  
+              <p:menuitem value="CLIENTES" url="/principal/administracion/clientes.faces" />
+              <p:menuitem value="PROVEEDOR" url="/principal/admin/Proveedor.faces" />
+              <p:menuitem value="PRODUCTOS" url="/principal/admin/Productos.faces" />
+              
+              
+        </p:submenu> 
+     </p:panelMenu>
+     
+</h:form>  
+  
+    
+
+  
+</ui:composition> 

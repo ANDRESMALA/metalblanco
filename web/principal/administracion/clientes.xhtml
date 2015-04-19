@@ -1,0 +1,114 @@
+<ui:composition template="../templates/template.xhtml"
+xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:define name="clientes">
+        
+        <h:form id="cliente">
+            <p:growl id="growl" />
+            <p:panel id="pn0">
+                <h1>CLIENTES</h1>
+            </p:panel>
+            <p:panel id="pnl" >
+              
+            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                <h:panelGrid id="panel1" columns="4" cellpadding="5">  
+                    <h:outputLabel for="rut" value="* Rut:" style="font-weight:bold"  />  
+                    <p:inputText id="rut" value="#{jSFMCliente.rutCliente}"  maxlength="10"/> 
+                    
+                     <h:outputLabel for="nombreCom" value="Nombre Comercial:" style="font-weight:bold"/>  
+                     <p:inputText id="nombreCom" value="#{jSFMCliente.nomComercial}"  size="50"/>  
+                     
+                     <h:outputLabel for="direccion" value="Direccion:" style="font-weight:bold"/>  
+                     <p:inputText id="direccion" value="#{jSFMCliente.direccion}" />
+                     
+                     <h:outputLabel for="telefono" value="Telefono:" style="font-weight:bold"/>  
+                     <p:inputText id="telefono" value="#{jSFMCliente.telefono}" /> 
+                 
+                     <h:outputLabel for="email" value=" * Email:" style="font-weight:bold"/>  
+                     <p:inputText id="email" value="#{jSFMCliente.email}" size="30" /> 
+                     
+                     <h:outputLabel for="nomContacto" value="Nombre Contacto:" style="font-weight:bold"/>  
+                     <p:inputText id="nomContacto" value="#{jSFMCliente.nomContacto}"  size="50"/> 
+                     
+                     <h:outputLabel for="descuento" value=" * Descuento:" style="font-weight:bold"/>  
+                     <p:inputText id="descuento" value="#{jSFMCliente.descuento}"  size="10"/> 
+                     
+                     <h:outputLabel for="numCuenta" value="Numero de Cuenta:" style="font-weight:bold"/>  
+                     <p:inputText id="numCuenta" value="#{jSFMCliente.numCuenta}" />
+                     
+                     <h:outputLabel for="web" value="Web:" style="font-weight:bold"/>  
+                     <p:inputText id="web" value="#{jSFMCliente.web}" />
+                     
+                     <h:outputLabel  value="Comuna:" style="font-weight:bold"/> 
+                      <p:selectOneMenu value="#{jSFMCliente.laComuna}" effect="fade" >  
+                          <f:selectItem itemLabel="#{jSFMCliente.comunismo.nomComuna}" itemValue="#{jSFMCliente.comunismo.codComuna}" />  
+                         <f:selectItems value="#{jSFMCliente.lasComuna}" var="player" itemLabel="#{player.description}" 
+                                       itemValue="#{player.label}"/>  
+                     </p:selectOneMenu> 
+                     
+                    
+                    
+                     
+             </h:panelGrid>  
+           </p:panel>  
+            
+            <p:panel id="pn2">
+                     <h:panelGrid columns="4" cellpadding="5"> 
+                        <p:commandButton id="Guardar" value="Guardar"   style="margin:0" action="#{jSFMCliente.guardar()}" update="panel1,tabla" />
+                        <p:commandButton id="Buscar" value="Buscar"   style="margin:0" action="#{jSFMCliente.buscarCliente()}" update="panel1" />
+                        <p:commandButton id="Modificar" value="Modificar"   style="margin:0" action="#{jSFMCliente.acutualizar()}" update="panel1,tabla" />
+                     </h:panelGrid> 
+            </p:panel>
+            
+            
+            <p:dataTable id="tabla"  var="cli" value="#{jSFMCliente.listaClientes}" rowKey="#{cli.rutCliente}" widgetVar="tablaDeVentas"  
+                         emptyMessage="No hay Clientes con este criterio de filtrado"
+                         filteredValue="#{jSFMCliente.clientesFiltrados}" paginator="true" rows="10"  
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                         rowsPerPageTemplate="5,10,15">
+                
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Buscar en todos:" />
+                    <p:inputText id="globalFilter" onkeyup="tablaDeVentas.filter()" style="width:150px" />
+                    </p:outputPanel>
+                </f:facet>
+                <p:column headerText="RUT CLIENTE"  filterBy="#{cli.rutCliente}" filterMatchMode="startsWith">  
+                    <h:outputText value="#{cli.rutCliente}" />  
+                </p:column> 
+                <p:column headerText="NOMBRE COMERCIAL" filterBy="#{cli.nomComercial}" filterMatchMode="startsWith">  
+                    <h:outputText value="#{cli.nomComercial}" />  
+                </p:column> 
+                <p:column headerText="DIRECCION">  
+                    <h:outputText value="#{cli.direccion}" />  
+                </p:column> 
+                <p:column headerText="TELEFONO">  
+                    <h:outputText value="#{cli.telefono}" />  
+                </p:column> 
+               
+                <p:column headerText="DESCUENTO">  
+                    <h:outputText value="#{cli.descuento}" />  
+                </p:column> 
+                <p:column headerText="N° CUENTA">  
+                    <h:outputText value="#{cli.numCuenta}" />  
+                </p:column>
+                <p:column headerText="WEB">  
+                    <h:outputText value="#{cli.web}" />  
+                </p:column>
+                <p:column headerText="COMUNA">  
+                    <h:outputText value="#{cli.comunaCodComuna.nomComuna}" />  
+                </p:column>
+  
+                <p:column headerText="Accion"  width="60">  
+                    <p:commandButton id="Borrar"  icon="ui-icon-close" style="margin:0" action="#{jSFMCliente.borrar(cli)}" update="tabla"  />
+                    <p:commandButton id="Editar"  icon="ui-icon-pencil" style="margin:0" action="#{jSFMCliente.editar(cli)}" update=":cliente:panel1"  />
+                </p:column>  
+            </p:dataTable> 
+   
+</h:form>
+            
+    </ui:define>
+</ui:composition> 

@@ -1,0 +1,304 @@
+<ui:composition template="../templates/template.xhtml"
+xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:define name="nota">
+        
+        <h:form id="nota">
+            <p:growl   autoUpdate="true" sticky="true"   showDetail="true"  />
+            <p:panel id="titulo">
+                <h1>Nota de Venta</h1>
+            </p:panel>
+           
+            <p:panel id="cabecera" header="CLIENTE" toggleable="true" toggleSpeed="500" collapsed="false" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
+                
+                
+               
+                <h:panelGrid id="panel1" columns="6" cellpadding="5"> 
+                        <h:outputLabel for="BUSCAR" value="BUSCAR:" style="font-weight:bold"  />  
+                       
+                        <p:commandButton  type="button" icon="ui-icon-search" onclick="PF('dlg1').show();" />
+                        
+                        <p:selectOneMenu id="estadoDePago" value="#{jSFMNotaDeVenta.estadoDelPago}" style="width:125px" >
+                            <f:selectItems  value="#{jSFMNotaDeVenta.estaPagado}"/>
+                         </p:selectOneMenu>  
+                        
+                        <p:selectOneMenu id="estadoDeFact" value="#{jSFMNotaDeVenta.estadoDeFacturacion}" style="width:125px">
+                            <f:selectItems  value="#{jSFMNotaDeVenta.estafactu}"/>
+                        </p:selectOneMenu>
+                        
+                       <p:commandButton  type="button" icon="ui-icon-pencil" onclick="PF('dlg0').show();" />
+                      
+                       <p:dialog header="TIPO DE PAGO " widgetVar="dlg0" modal="true" height="500" width="500">
+                           
+                           <h:panelGrid id="panel1xx" columns="2" cellpadding="5"> 
+                               <h:outputLabel for="tipoPago" value="Metodo de Pago" style="font-weight:bold"  />  
+                               <p:selectOneMenu id="tipoPago" value="#{jSFMNotaDeVenta.tipoDePago}" style="width:125px">
+                                    <f:selectItems  value="#{jSFMNotaDeVenta.estatipo}"/>
+                                </p:selectOneMenu>
+                                 
+                                <h:outputLabel for="n1" value="Primer Cheque" style="font-weight:bold"  />  
+                                <p:inputText id="n1" value="#{jSFMNotaDeVenta.primerCheque}" maxlength="10" style="background-color: #ccffff">
+                                <f:validateDoubleRange minimum="0" maximum="10000000" />
+                                </p:inputText>
+                                <p:message for="n1" />
+                                <h:outputText value="#{validationView.integer}" />
+                                
+                                <h:outputLabel for="n2" value="Segundo Cheque" style="font-weight:bold"  />  
+                                <p:inputText id="n2" value="#{jSFMNotaDeVenta.segundoCheque}" maxlength="10" style="background-color: #ccffff"/>
+                                <h:outputLabel for="n3" value="Tercer Cheque" style="font-weight:bold"  />  
+                                <p:inputText id="n3" value="#{jSFMNotaDeVenta.tercerCheque}" maxlength="10" style="background-color: #ccffff"/>
+                                <h:outputLabel for="nch" value="Nombre cheque" style="font-weight:bold"  />  
+                                <p:inputText id="nch" value="#{jSFMNotaDeVenta.nombreCheque}" maxlength="10" style="background-color: #ccffff"/>
+                               
+                                
+                                <p:selectOneMenu id="banco" value="#{jSFMNotaDeVenta.banco}" style="width:125px"  >
+                                    <f:selectItems  value="#{jSFMNotaDeVenta.bancos}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                            
+                            
+                        </p:dialog>
+                       
+                        
+                        <p:dialog header="LISTA DE CLIENTES " widgetVar="dlg1" modal="true" height="150" width="700">
+                            <p:dataTable var="clie" value="#{jSFMNotaDeVenta.listaClientes}" rowKey="#{clie.rutCliente}" rows="5" paginator="true" selectionMode="single">
+                                
+                                <p:ajax event="rowSelect" listener="#{jSFMNotaDeVenta.onRowSelectCli}"  update=":nota" />
+                                    
+                                <p:column headerText="Rut Cliente" filterBy="#{clie.rutCliente}">
+                                        <h:outputText value="#{clie.rutCliente}" />
+                                    </p:column>
+
+                                <p:column headerText="Nombre Comercial" filterBy="#{clie.nomComercial}">
+                                        <h:outputText value="#{clie.nomComercial}" />
+                                    </p:column>
+
+                                <p:column headerText="Nombre Contacto" filterBy="#{clie.nomComercial}">
+                                        <h:outputText value="#{clie.nomContacto}" />
+                                    </p:column>
+
+                                    <p:column headerText="Email" filterBy="#{clie.email}">
+                                        <h:outputText value="#{clie.email}"  />
+                                    </p:column>
+                            </p:dataTable>
+                            
+                        </p:dialog>
+                        
+                        
+                </h:panelGrid>
+                
+                <h:panelGrid id="panel1x" columns="4" cellpadding="5"> 
+                        <h:outputLabel for="rutCli" value="Rut Cliente:" style="font-weight:bold"  />  
+                        <h:inputText id="rutCli" value="#{jSFMNotaDeVenta.cliente.rutCliente}" maxlength="10" readonly="true"/> 
+                        <h:outputLabel for="fecha" value="Fecha:" style="font-weight:bold"  />  
+                        <h:inputText id="fecha" value="#{jSFMNotaDeVenta.fecha}" readonly="true" /> 
+                </h:panelGrid>
+                
+                <h:panelGrid id="panel2" columns="4" cellpadding="5">         
+                        
+                        <h:outputLabel for="nombreCom" value="Nombre Comercial:" style="font-weight:bold"/>  
+                        <h:inputText id="nombreCom" value="#{jSFMNotaDeVenta.cliente.nomComercial}"  readonly="true" size="50"/> 
+                        
+                        <h:outputLabel for="direccion" value="Direccion:" style="font-weight:bold"/>  
+                        <h:inputText id="direccion" value="#{jSFMNotaDeVenta.cliente.direccion}"  readonly="true" size="50"/> 
+                        
+                        <h:outputLabel for="telefono" value="Teléfono:" style="font-weight:bold"/>  
+                        <h:inputText id="telefono" value="#{jSFMNotaDeVenta.cliente.telefono}"  readonly="true" size="10"/> 
+                        
+                        <h:outputLabel for="email" value="Email:" style="font-weight:bold"/>  
+                        <h:inputText id="email" value="#{jSFMNotaDeVenta.cliente.email}"  readonly="true" size="30"/>
+                        
+                        <h:outputLabel for="nombreContacto" value="Nombre Contacto:" style="font-weight:bold"/>  
+                        <h:inputText id="nombreContacto" value="#{jSFMNotaDeVenta.cliente.nomContacto}"  readonly="true" size="50"/>
+                        
+                        <h:outputLabel for="Comuna" value="Comuna:" style="font-weight:bold"/>  
+                        <h:inputText id="Comuna" value="#{jSFMNotaDeVenta.laComuna}"  readonly="true" size="20"/>
+                        
+                        <h:outputLabel for="Ciudad" value="Ciudad:" style="font-weight:bold"/>  
+                        <h:inputText id="Ciudad" value="#{jSFMNotaDeVenta.laCiudad}"  readonly="true" size="20"/>
+                        <h:outputLabel for="Giro" value="Giro:" style="font-weight:bold"/>  
+                        <h:inputText id="Giro" value="#{jSFMNotaDeVenta.cliente.giro}"  readonly="true" size="50"/>
+                </h:panelGrid>
+                
+                
+            </p:panel>
+            <p:panel id="lineaPedidos" header="PEDIDOS" toggleable="true" toggleSpeed="500" collapsed="false" closeSpeed="500" widgetVar="lineaPedidos" style="margin-bottom:20px">
+                
+                <h:panelGrid id="panel3" columns="4" cellpadding="2">  
+                        <h:outputLabel for="codPro" value="Ingrerse Codigo:"  style="font-weight:bold"  />  
+                        <p:inputText id="codPro" value="#{jSFMNotaDeVenta.codigoProducto}" size="12" style="background-color: #ccffff"/>
+                       
+                        
+
+                        <p:commandButton  type="button" icon="ui-icon-search" onclick="PF('dlg2').show();" action="#{jSFMNotaDeVenta.traerAllProducto()}" />
+                        
+                        <p:dialog header="LISTA DE PRODUCTOS" widgetVar="dlg2" modal="true" height="150" width="700">
+                            <p:dataTable var="pro" value="#{jSFMNotaDeVenta.listaProductos}" rowKey="#{pro.codProducto}" rows="5" paginator="true" selectionMode="single">
+                                
+                                <p:ajax event="rowSelect" listener="#{jSFMNotaDeVenta.onRowSelect}"  update=":nota:lineaPedidos" />
+                                <p:ajax event="rowUnselect" listener="#{jSFMNotaDeVenta.onRowUnselect}"  />
+                                    <p:column headerText="Codigo">
+                                        <h:outputText value="#{pro.codProducto}" />
+                                    </p:column>
+                                
+                                    <p:column headerText="Categoria" filterBy="#{pro.CATEGORIAidcategoria.nombreCategoria}" 
+                                          filterOptions="#{jSFMNotaDeVenta.categoriaOptions}"  
+                                          filterMatchMode="exact">  
+                                          <h:outputText value="#{pro.CATEGORIAidcategoria.nombreCategoria}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Descripcion">
+                                        <h:outputText value="#{pro.descripcionProducto}" />
+                                    </p:column>
+
+                                    <p:column headerText="Descuento %">
+                                        <h:outputText value="#{pro.descuento}" style="float:right">
+                                            <f:convertNumber  currencySymbol="%" groupingUsed="true"
+                                        maxFractionDigits="2" type="number"/>
+                                        </h:outputText>
+                                    </p:column>
+                                        
+                                    <p:column headerText="Precio Unit.">
+                                        <h:outputText value="#{pro.valorNetoDeVenta}" style="float:right">
+                                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                                         maxFractionDigits="0" type="currency"  />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            
+                        </p:dialog> 
+                  </h:panelGrid>
+                
+                  <h:panelGrid id="panel3x" columns="4" cellpadding="2">       
+                        <h:outputLabel for="codigoPro" value="Codigo:"  style="font-weight:bold"  />  
+                        <h:inputText id="codigoPro" value="#{jSFMNotaDeVenta.codigo}" readonly="true"/>
+                        
+                        <h:outputLabel for="descripcionPro" value="Descripcion:" style="font-weight:bold"   />  
+                        <h:inputText  id="descripcionPro" value="#{jSFMNotaDeVenta.descripcion}" readonly="true" size="80"/> 
+                </h:panelGrid>
+                
+                <h:panelGrid id="panel4" columns="8" cellpadding="10">  
+                        
+                       <h:outputLabel for="valorUnit" value="Precio:" style="font-weight:bold"  />  
+                       <h:inputText id="valorUnit" value="#{jSFMNotaDeVenta.precio}" readonly="true" style=" text-align:right">
+                       <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                       </h:inputText>
+                       <h:outputLabel for="cantidad" value="Cantidad:" style="font-weight:bold"  />  
+                       <p:inputText id="cantidad" value="#{jSFMNotaDeVenta.cantidad}" size="5" style=" text-align:right;background-color: #ccffff" />
+                       
+                       <h:outputLabel for="descuento" value="Descuento:" style="font-weight:bold"  />  
+                       <h:inputText id="descuento" value="#{jSFMNotaDeVenta.descuento}" readonly="true" style=" text-align:right" >
+                       <f:convertNumber currencySymbol="%" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                       </h:inputText>
+                       
+                       <h:outputLabel for="subtotal" value="Sub Total:" style="font-weight:bold"  />  
+                       <h:inputText id="subtotal" value="#{jSFMNotaDeVenta.subtotal}"  readonly="true" style=" text-align:right" >
+                       <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                       </h:inputText>
+                    
+                    
+                       
+                </h:panelGrid>
+                <h:panelGrid id="panel5" columns="4" cellpadding="5">
+                    <p:commandButton id="calcular" value="CALCULAR" style="margin:0" action="#{jSFMNotaDeVenta.calcularSubtotales()}" update=":nota" />
+                        <p:commandButton id="limpiar" value="LIMPIAR" style="margin:0" action="#{jSFMNotaDeVenta.limpiarProd()}" update=":nota" />
+                        <p:commandButton id="insertar" value="AGREGAR" style="margin:0" action="#{jSFMNotaDeVenta.ingresarLinea()}" update=":nota" />
+                </h:panelGrid>
+                
+            </p:panel>
+            <p:panel id="tablaPedidos" style=" width: 800" >
+                
+                
+                <p:dataTable id="tablaPedido"  var="ltp" value="#{jSFMNotaDeVenta.listatemporal}" rowKey="#{ltp.codProducto}" widgetVar=""  
+                             paginator="true" rows="5"    resizableColumns="false" rowsPerPageTemplate="5,10,15">
+                
+               
+                <p:column headerText="CODIGO" >  
+                    <h:outputText value="#{ltp.codProducto}"  />  
+                </p:column> 
+                <p:column headerText="DESCRIPCION" >  
+                   <h:outputText value="#{ltp.descripcion}" />  
+                </p:column> 
+                <p:column headerText="CANTIDAD"  >  
+                    <h:outputText value="#{ltp.cantidad}" style="float:right"/>  
+                </p:column>     
+                <p:column headerText="PRECIO UNIT" >  
+                    <h:outputText value="#{ltp.valorUnitario}" style="float:right">  
+                    <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="DESCUENTO" >  
+                    <h:outputText  value="#{ltp.descuento}" style="float:right"> 
+                    <f:convertNumber currencySymbol="" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:outputText>
+                </p:column>  
+                <p:column headerText="SUB TOTAL" >  
+                    <h:outputText  value="#{ltp.subTotal}"  style="float:right;" >
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                </h:outputText>
+                    
+                </p:column>    
+                    
+  
+                <p:column headerText="EDICION"  width="60" style="width:32px">  
+                    
+                        <p:commandButton id="Borrar"  icon="ui-icon-close" style="margin:0" action="#{jSFMNotaDeVenta.eliminarLinea(ltp)}" update=":nota" />
+                 
+                </p:column>  
+            </p:dataTable> 
+                
+                
+            </p:panel>
+            <p:panel id="totales" style="float: right">
+                
+                <p:panelGrid columns="3" style="width: 100%">
+                    <h:inputText id="v" value="" disabled="true"  size="80"/>
+                      
+                    <h:outputLabel for="neto" value="NETO: "/>
+                    <h:inputText  id="neto" value="#{jSFMNotaDeVenta.neto}" readonly="true" style=" text-align:right">
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:inputText>
+                    <h:inputText id="de" value="" disabled="true"  size="80"/>
+                      
+                    <h:outputLabel for="iva" value="IVA: "/>
+                    <h:inputText  id="iva" value="#{jSFMNotaDeVenta.iva}" readonly="true" style=" text-align:right">
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:inputText>
+                    
+                    <h:inputText id="Ee" value="" disabled="true"  size="80"/>
+                    <h:outputLabel for="total" value="TOTAL: "/>
+                    <h:inputText  id="total" value="#{jSFMNotaDeVenta.total}" readonly="true" style=" text-align:right">
+                        <f:convertNumber currencySymbol="CLP" groupingUsed="true"
+                            maxFractionDigits="0" type="currency"  />
+                    </h:inputText>
+                    
+                    </p:panelGrid>
+            </p:panel>
+            <p:panel id="botonera">
+                
+                <h:panelGrid id="panel6" columns="4" cellpadding="5">
+                    <p:commandButton id="agregarCot" value="AGREGAR NOTA" style="margin:0"  action="#{jSFMNotaDeVenta.agregarNotadeVenta()}"  update=":nota"/>
+                    <p:commandButton id="limpiarCot" value="LIMPIAR COTIZACION" style="margin:0" action="#{jSFMNotaDeVenta.limpiarNota()}" update=":nota" />
+                    <p:commandButton id="pr" value="prueba" style="margin:0" action="#{jSFMNotaDeVenta.imprimir()}" update=":nota" />  
+                     <p:commandButton action="#{jSFMNotaDeVenta.generateReport('reportReference')}"
+                                        value="GENERAR INFORME" ajax="false"  />
+         
+   
+                </h:panelGrid>
+            </p:panel>
+            
+        </h:form>
+        
+    </ui:define>
+</ui:composition> 

@@ -1,0 +1,475 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package controladores;
+
+
+import modelo.Producto;
+import dao.ClientesDao;
+import dao.ComunaDao;
+import dao.CotizacionDao;
+import dao.DetalleCotizacionDao;
+import dao.LineaTemporalDao;
+import dao.ProductosDao;
+import dao.UsuarioDao;
+import java.io.IOException;
+
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import java.util.List;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import metalblanco.map.com.Cliente;
+import metalblanco.map.com.Comuna;
+import metalblanco.map.com.Cotizacion;
+import metalblanco.map.com.DetalleDeCotizacion;
+import metalblanco.map.com.DetalleTempCot;
+import metalblanco.map.com.Productos;
+import modelo.BussinesModelCotizacion;
+import modelo.CalcularSubtotal;
+import modelo.Mensajes;
+import modelo.Reportes;
+import modelo.Validadores;
+
+import org.primefaces.model.StreamedContent;
+
+/**
+ *
+ * @author andresmalagueno
+ */
+@ManagedBean
+@ViewScoped
+public class JSFMCotizaciones implements Serializable {
+    
+    
+    private Comuna comuna=new Comuna();
+    private Cliente cliente=new Cliente();
+    private ClientesDao cli=new ClientesDao();
+    private ComunaDao com=new ComunaDao();
+    private Productos producto=new Productos();
+    private ProductosDao pro=new ProductosDao();
+    private Validadores validador=new Validadores();
+    
+    private ArrayList<Producto> listatemporal=new ArrayList<Producto>();
+    
+    private CalcularSubtotal subt=new CalcularSubtotal(); 
+
+    private CotizacionDao cot = new CotizacionDao();
+    private DetalleCotizacionDao detDao=new DetalleCotizacionDao();
+    private UsuarioDao usua=new UsuarioDao();
+    private DetalleDeCotizacion midetalle=new DetalleDeCotizacion ();
+    private Mensajes mensaje=new Mensajes();
+    private BussinesModelCotizacion bussines=new BussinesModelCotizacion();
+    
+    
+    Reportes reporte=new Reportes();
+    private StreamedContent file=null;       
+    int numcotTemp=0;    
+    
+    private String codigoProducto="";
+    private String descripcion="";
+    private double descuento=0.0;
+    private double Precio=0.0;
+    private double subtotal=0.0;
+    private int cantidad=0;
+    private double neto=0.0;
+    private double iva=0.0;
+    private double total=0.0;
+    private String numCot="";
+    private String fecha;
+    Date mifechaactual=new Date();
+    private int indice;
+    
+    
+    
+    public JSFMCotizaciones() {
+    }
+    
+    public void traerCliente(){
+        if(cli.buscarCliente(cliente.getRutCliente())==null || this.cliente.equals(null)){
+           mensaje.Mensajes(2); 
+        }else{
+        cliente=cli.buscarCliente(cliente.getRutCliente());
+//       cliente.setNomComercial(cli.buscarCliente(cliente.getRutCliente()).getNomComercial());
+        comuna=com.buscarComuna(cliente.getCOMUNAcodComuna().getCodComuna());
+        }
+        
+    }
+    
+    
+    public void limpiarCliente(){
+    
+        this.cliente.setRutCliente("");
+        this.cliente.setNomComercial("");
+        this.cliente.setDireccion("");
+        this.cliente.setCuentaCorriente("");
+        this.cliente.setEmail("");
+        this.cliente.setNomContacto("");
+        this.cliente.setRepresentante("");
+        this.cliente.setTelefono("");
+        this.comuna.setNomComuna("");
+    }
+    
+    public void traerProducto(){
+        
+        if(pro.buscarProducto(this.codigoProducto)==null || this.codigoProducto.equals(null)){
+            mensaje.Mensajes(1);
+        }else{
+        producto=pro.buscarProducto(this.getCodigoProducto());
+        this.setDescripcion(producto.getDescripcionProducto());
+        this.setPrecio(producto.getValorNetoDeVenta());
+        this.setDescuento(producto.getDescuento());
+        }
+        
+        
+    }
+    
+    
+    public void calcularSubtotales(){
+        
+        if(validador.isInt(this.getCantidad())==true){
+        CalcularSubtotal subt=new CalcularSubtotal();  
+        this.setSubtotal(subt.Calcular(this.Precio,this.getCantidad(),this.descuento));
+        }else{
+    
+            mensaje.Mensajes(4);
+        }
+    }
+    
+    
+    public void ingresarLinea(){
+        
+       if(this.codigoProducto.equals("")){
+       
+        mensaje.Mensajes(15);
+       }else if(this.descripcion.equals("")){
+       
+           mensaje.Mensajes(16);
+       
+       }else{ 
+            Producto linproducto =new Producto();
+            linproducto.setCodProducto(this.getCodigoProducto());
+            linproducto.setDescripcion(this.getDescripcion());
+            linproducto.setCantidad(this.getCantidad());
+            linproducto.setValorUnitario(this.getPrecio());
+            linproducto.setDescuento(this.getDescuento());
+            linproducto.setSubTotal(this.getSubtotal());
+
+            if(this.buscar(this.getCodigoProducto())==true){
+
+               int cant=listatemporal.get(indice).getCantidad();
+               double subt=listatemporal.get(indice).getSubTotal();
+               linproducto.setCantidad(this.getCantidad()+cant);
+               linproducto.setSubTotal(this.getSubtotal()+subt);
+               listatemporal.set(indice, linproducto);
+
+            }else{
+
+               this.listatemporal.add(linproducto);
+            }
+       }
+            this.limpiarProd();
+            this.hacerCalculos();
+    }
+    
+    
+    
+    public boolean buscar(String nombreB){
+    
+        boolean respuesta = false;
+        for(int i=0;i<listatemporal.size();i++){
+        
+            if(listatemporal.get(i).getCodProducto().equals(this.getCodigoProducto())){
+            
+                indice=i;
+                respuesta=true;
+        
+            }else{
+                respuesta=false;
+            }
+         
+        }
+        return respuesta;
+    }
+    
+    
+    public void limpiarProd(){
+                this.setCodigoProducto("");
+                this.setDescripcion("");
+                this.setPrecio(0.0);
+                this.setCantidad(0);
+                this.setDescuento(0.0);
+                this.setSubtotal(0.0);
+    }
+    
+   
+    
+    public void eliminarLinea(Producto producto){
+        listatemporal.remove(producto);
+        this.hacerCalculos();
+    } 
+    
+    public void eliminarTodo(){
+        
+        listatemporal.clear();
+    
+    }
+    
+    public void hacerCalculos(){
+        
+        double suma=0;
+    
+        for(Producto p:listatemporal){
+            suma+=p.getSubTotal();
+        }
+        
+        this.setNeto(suma);
+        this.setIva(subt.iva(neto));
+        this.setTotal(subt.total(neto, iva));
+    }
+  //--------------------------------------
+    
+    public void agregarCot() throws IOException{
+        
+        
+        int numero =bussines.validaIngreso(cliente.getRutCliente(),total);
+    
+        switch(numero){
+        
+            
+            case 1:
+                mensaje.Mensajes(7); 
+                break;
+            case 2:
+                 mensaje.Mensajes(8);
+                break;
+            case 3:
+            Cotizacion cotizacion=new Cotizacion();
+            cotizacion.setRutCliente(this.getCliente().getRutCliente());
+            cotizacion.setFecha(this.mifechaactual);
+            cotizacion.setRazonSocial(this.getCliente().getNomComercial());
+            cotizacion.setDireccion(this.getCliente().getDireccion());
+            cotizacion.setTelefono(this.getCliente().getTelefono());
+            cotizacion.setEmail(this.getCliente().getEmail());
+            cotizacion.setNomContacto(this.getCliente().getNomContacto());
+            cotizacion.setComuna(this.getCliente().getCOMUNAcodComuna().getNomComuna());
+            cotizacion.setCiudad(this.getCliente().getCOMUNAcodComuna().getCIUDADcodCiudad().getNombreCiudad());
+            cotizacion.setVendedor(usua.buscarUsuario(1).getNombre());
+            cotizacion.setNeto(this.getNeto());
+            cotizacion.setIva(this.getIva());
+            cotizacion.setTotal(this.getTotal());
+            cotizacion.setUSUARIOidusuario(usua.buscarUsuario(1));
+            cot.init();
+            cot.insertar(cotizacion);
+            cot.close();
+            this.setNumCot(Integer.toString(cot.getMaxId()));
+            
+            for( Producto p:listatemporal ){
+        
+        
+                DetalleDeCotizacion midetalle=new DetalleDeCotizacion ();
+            
+                midetalle.setCOTIZACIONnumcotizacion(cotizacion);
+                midetalle.setCodProducto(p.getCodProducto());
+                midetalle.setDescripcion(p.getDescripcion());
+                midetalle.setCantidad(p.getCantidad());
+                midetalle.setValorUnitario(p.getValorUnitario());
+                midetalle.setDescuento(p.getDescuento());
+                midetalle.setSubtotal(p.getSubTotal());
+                detDao.init();
+                detDao.insertar(midetalle);
+                detDao.close();
+                }
+                
+                mensaje.MensajesConParametro(1,this.getNumCot());
+                this.numcotTemp=Integer.parseInt(this.getNumCot());
+                this.limpiarCot();
+               break;
+            
+         default: 
+            break; 
+         }
+        
+        numero=0;
+   
+    }
+    
+    
+    
+    
+    
+    public void limpiarCot(){
+    
+                this.limpiarCliente();
+                this.limpiarProd();
+                this.eliminarTodo();
+                this.hacerCalculos();
+                this.setNumCot("");
+        
+    }
+   //--------------------------------------
+  
+     public String generateReport(final String reference){
+        
+        
+        try{
+            if(this.numcotTemp!=0){
+                reporte.reporte(this.numcotTemp);
+            }else{
+                mensaje.Mensajes(9);
+            }
+            numcotTemp=0;
+        
+        }catch(Exception e){
+           mensaje.Mensajes(9);
+        }
+        
+        return "cotizaciones.faces";
+    } //--------------------------------------
+     
+     
+    
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Comuna getComuna() {
+        return comuna;
+    }
+
+    public void setComuna(Comuna comuna) {
+        this.comuna = comuna;
+    }
+
+    public Productos getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Productos producto) {
+        this.producto = producto;
+    }
+
+    public Double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(Double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public String getCodigoProducto() {
+        return codigoProducto;
+    }
+
+    public void setCodigoProducto(String codigoProducto) {
+        this.codigoProducto = codigoProducto;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Double getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(Double descuento) {
+        this.descuento = descuento;
+    }
+
+    public Double getPrecio() {
+        return Precio;
+    }
+
+    public void setPrecio(Double Precio) {
+        this.Precio = Precio;
+    }
+
+
+    public Double getNeto() {
+        return neto;
+    }
+
+    public void setNeto(Double neto) {
+        this.neto = neto;
+    }
+
+    public Double getIva() {
+        return iva;
+    }
+
+    public void setIva(Double iva) {
+        this.iva = iva;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+    public String getNumCot() {
+        return numCot;
+    }
+
+    public void setNumCot(String numCot) {
+        this.numCot = numCot;
+    }
+
+    public StreamedContent getFile() {
+        return file;
+    }
+
+    public void setFile(StreamedContent file) {
+        this.file = file;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+  
+    public int getIndice() {
+        return indice;
+    }
+
+    public void setIndice(int indice) {
+        this.indice = indice;
+    }
+
+    public ArrayList<Producto> getListatemporal() {
+        return listatemporal;
+    }
+
+    public void setListatemporal(ArrayList<Producto> listatemporal) {
+        this.listatemporal = listatemporal;
+    }
+}
