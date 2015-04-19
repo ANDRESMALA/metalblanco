@@ -11,13 +11,50 @@ xmlns="http://www.w3.org/1999/xhtml"
             <p:panel id="titulo">
                 <h1>Nota de Venta</h1>
             </p:panel>
-           
+            
+            <p:panel id="TraerCotizacion">
+               <h:panelGrid id="panel0" columns="5" cellpadding="5">         
+                        <h:outputLabel  value="BUSCAR COTIZACION" style="font-weight:bold" />
+                        <p:commandButton  type="button" icon="ui-icon-search" onclick="PF('dlgCOT').show();"/>
+                        
+                        <p:dialog header="LISTA DE COTIZACIONES" widgetVar="dlgCOT" modal="true" height="500" width="700">
+                            <p:dataTable var="listCot" value="#{jSFMNotaDeVenta.listaCotizaciones}" rowKey="#{listCot.numCotizacion}" rows="5" paginator="true" selectionMode="single">
+                                
+                                <p:ajax event="rowSelect" listener="#{jSFMNotaDeVenta.onRowSelectCotizacion}"  update=":nota" />
+                                    
+                                <p:column headerText="Num Cotizacion" filterBy="#{listCot.numCotizacion}">
+                                        <h:outputText value="#{listCot.numCotizacion}" />
+                                </p:column>
+
+                                <p:column headerText="RutCotizacion" filterBy="#{listCot.rutCliente}">
+                                        <h:outputText value="#{listCot.rutCliente}" />
+                                </p:column>
+                                
+                                <p:column headerText="Nombre Cliente" filterBy="#{listCot.razonSocial}">
+                                    <h:outputText value="#{listCot.razonSocial}" />
+                                </p:column>
+
+                                <p:column headerText="Fecha" filterBy="#{listCot.fecha}">
+                                        <h:outputText value="#{listCot.fecha}" />
+                                </p:column>
+
+                                <p:column headerText="Neto" filterBy="#{listCot.neto}">
+                                        <h:outputText value="#{listCot.neto}"  />
+                                </p:column>
+                                
+                                
+                            </p:dataTable>
+                        </p:dialog>
+                  
+                </h:panelGrid>
+            </p:panel>
+            
             <p:panel id="cabecera" header="CLIENTE" toggleable="true" toggleSpeed="500" collapsed="false" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
                 
                 
                
                 <h:panelGrid id="panel1" columns="6" cellpadding="5"> 
-                        <h:outputLabel for="BUSCAR" value="BUSCAR:" style="font-weight:bold"  />  
+                        <h:outputLabel  value="BUSCAR:" style="font-weight:bold"  />  
                        
                         <p:commandButton  type="button" icon="ui-icon-search" onclick="PF('dlg1').show();" />
                         

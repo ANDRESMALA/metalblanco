@@ -6,9 +6,11 @@
 package dao;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import metalblanco.map.com.Cotizacion;
 
 /**
@@ -96,6 +98,13 @@ public class CotizacionDao implements Serializable {
     
     }
       
-    
+    public List<Cotizacion> findAllCotizaciones() {
+            this.init();
+            List<Cotizacion> cotizacion;
+            Query query = em.createQuery("SELECT c FROM Cotizacion c");
+            cotizacion=query.getResultList();
+            this.close();
+            return cotizacion;
+    }
    
 }

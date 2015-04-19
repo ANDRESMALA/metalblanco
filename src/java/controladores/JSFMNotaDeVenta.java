@@ -50,9 +50,10 @@ public class JSFMNotaDeVenta {
 
     
 
-   private Comuna comuna=new Comuna();
+    private Comuna comuna=new Comuna();
     private Cliente cliente=new Cliente();
     private ClientesDao cli=new ClientesDao();
+    private CotizacionDao cot=new CotizacionDao();
     
     private ComunaDao com=new ComunaDao();
     private Productos producto=new Productos();
@@ -60,7 +61,7 @@ public class JSFMNotaDeVenta {
     private Validadores validador=new Validadores();
     private ArrayList<Producto> listatemporal=new ArrayList<Producto>();
     private CalcularSubtotal subt=new CalcularSubtotal();
-    
+    private Reportes reporte=new Reportes();
     private NotaDeVenta notadeVenta=new NotaDeVenta();
     private DetalleNotaDeVenta detalleNotaDeVenta=new DetalleNotaDeVenta();
     private NotaDeVentaDao not=new NotaDeVentaDao();
@@ -69,9 +70,18 @@ public class JSFMNotaDeVenta {
     private DetalleDeCotizacion midetalle=new DetalleDeCotizacion ();
     private Mensajes mensaje=new Mensajes();
     private BussinesModelCotizacion bussines=new BussinesModelCotizacion();
+    private ArrayList<String> estaPagado=new ArrayList();
+    private ArrayList<String> estafactu=new ArrayList();
+    private ArrayList<String> estatipo=new ArrayList();
+    private ArrayList<String> bancos=new ArrayList();
+    
+    
     private List<Productos> listaProductos=pro.findAllProductos();
     private List<Cliente> listaClientes=cli.findAllClientes();
+    private List<Cotizacion> listaCotizaciones=cot.findAllCotizaciones();
     private SelectItem[] categoriaOptions=this.createFilterOptions();
+    
+    
     private String laComuna ="";
     private String laCiudad ="";
     private String estadoDelPago="";
@@ -80,33 +90,31 @@ public class JSFMNotaDeVenta {
     private int primerCheque=0;
     private int segundoCheque=0;
     private int tercerCheque=0;
+    private int numcotTemp=0;
+    private int indice;
+    
     private String  nombreCheque="";
     private String banco="";
-    
-    
-    Reportes reporte=new Reportes();
-    private StreamedContent file=null;       
-    int numcotTemp=0;
     private String rut="";
-    
     private String codigo="";
     private String codigoProducto="";
     private String descripcion="";
+    private String cantidad="0";
+    private String numCot="";
+    private String fecha;
+    
     private double descuento=0.0;
     private double Precio=0.0;
     private double subtotal=0.0;
-    private String cantidad="0";
     private double neto=0.0;
     private double iva=0.0;
     private double total=0.0;
-    private String numCot="";
-    private String fecha;
+    
+    private StreamedContent file=null;       
+    
     Date mifechaactual=new Date();
-    private int indice;
-    private ArrayList<String> estaPagado=new ArrayList();
-     private ArrayList<String> estafactu=new ArrayList();
-    private ArrayList<String> estatipo=new ArrayList();
-    private ArrayList<String> bancos=new ArrayList();
+    
+    
 
 
 
@@ -268,10 +276,11 @@ public class JSFMNotaDeVenta {
             linproducto.setDescuento(this.getDescuento());
             linproducto.setSubTotal(this.getSubtotal());
 
-            if(this.buscar(this.getCodigoProducto())==true){
+            if(this.buscarCodigoEnTemp(this.getCodigoProducto())==true){
 
                int cant=listatemporal.get(indice).getCantidad();
                double subt=listatemporal.get(indice).getSubTotal();
+               
                linproducto.setCantidad(Integer.parseInt(this.getCantidad())+cant);
                linproducto.setSubTotal(this.getSubtotal()+subt);
                listatemporal.set(indice, linproducto);
@@ -286,13 +295,14 @@ public class JSFMNotaDeVenta {
     }
     
     
-    
-    public boolean buscar(String nombreB){
+    //metodo que busca en un arraylist que e la lista temporal de productos agregados en la nota de venta
+    //devuelve un true si es encontrado
+    public boolean buscarCodigoEnTemp(String codigoProducto){
     
         boolean respuesta = false;
         for(int i=0;i<listatemporal.size();i++){
         
-            if(listatemporal.get(i).getCodProducto().equals(this.getCodigoProducto())){
+            if(listatemporal.get(i).getCodProducto().equals(codigoProducto)){
             
                 indice=i;
                 respuesta=true;
@@ -451,7 +461,7 @@ public class JSFMNotaDeVenta {
         return "cotizaciones.faces";
     } //--------------------------------------
      
-     
+     ////////////////////////////////////////////////metodos Get And Set
     
     public Cliente getCliente() {
         return cliente;
@@ -741,6 +751,14 @@ public class JSFMNotaDeVenta {
 
     public void setEstafactu(ArrayList<String> estafactu) {
         this.estafactu = estafactu;
+    }
+
+    public List<Cotizacion> getListaCotizaciones() {
+        return listaCotizaciones;
+    }
+
+    public void setListaCotizaciones(List<Cotizacion> listaCotizaciones) {
+        this.listaCotizaciones = listaCotizaciones;
     }
 
     
