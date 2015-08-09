@@ -293,9 +293,10 @@ public class JSFMmodCotizaciones implements Serializable{
         for(int i=0;i<listatemporal.size();i++){
         
             if(listatemporal.get(i).getCodProducto().equals(this.getCodigoProducto())){
-            
+                
                 indice=i;
                 respuesta=true;
+                break;
         
             }else{
                 respuesta=false;

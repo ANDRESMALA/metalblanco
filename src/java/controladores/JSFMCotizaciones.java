@@ -229,6 +229,7 @@ public class JSFMCotizaciones implements Serializable {
             
                 indice=i;
                 respuesta=true;
+                break;
         
             }else{
                 respuesta=false;

@@ -70,11 +70,7 @@ public class DetalleCotizacionDao implements Serializable{
 //            }catch(Exception e){
 //               detallecot=null;
 //            }
-                
-                for(DetalleDeCotizacion de:detallecot){
-                    System.out.println(de.getCodProducto());
-                
-                }
+               
             return detallecot;
     }
      

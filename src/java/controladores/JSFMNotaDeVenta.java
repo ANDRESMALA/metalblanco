@@ -30,6 +30,7 @@ import metalblanco.map.com.DetalleNotaDeVenta;
 import metalblanco.map.com.NotaDeVenta;
 import metalblanco.map.com.Productos;
 import modelo.BussinesModelCotizacion;
+import modelo.BussinesModelModCotizacion;
 import modelo.CalcularSubtotal;
 import modelo.Mensajes;
 import modelo.Producto;
@@ -54,7 +55,7 @@ public class JSFMNotaDeVenta {
     private Cliente cliente=new Cliente();
     private ClientesDao cli=new ClientesDao();
     private CotizacionDao cot=new CotizacionDao();
-    
+    private Cotizacion cotizacion=new Cotizacion();
     private ComunaDao com=new ComunaDao();
     private Productos producto=new Productos();
     private ProductosDao pro=new ProductosDao();
@@ -69,7 +70,10 @@ public class JSFMNotaDeVenta {
     private UsuarioDao usua=new UsuarioDao();
     private DetalleDeCotizacion midetalle=new DetalleDeCotizacion ();
     private Mensajes mensaje=new Mensajes();
-    private BussinesModelCotizacion bussines=new BussinesModelCotizacion();
+    private BussinesModelCotizacion bussines=new BussinesModelCotizacion();////????????????
+    private DetalleCotizacionDao detDao=new DetalleCotizacionDao();
+    
+    
     private ArrayList<String> estaPagado=new ArrayList();
     private ArrayList<String> estafactu=new ArrayList();
     private ArrayList<String> estatipo=new ArrayList();
@@ -100,8 +104,11 @@ public class JSFMNotaDeVenta {
     private String codigoProducto="";
     private String descripcion="";
     private String cantidad="0";
-    private String numCot="";
+    private String numNota="";
     private String fecha;
+    private int numCotizacion=0;
+    
+    
     
     private double descuento=0.0;
     private double Precio=0.0;
@@ -139,6 +146,7 @@ public class JSFMNotaDeVenta {
        
                
     }
+    
     public void borrarcombos(){
         
        estaPagado.clear();
@@ -147,9 +155,66 @@ public class JSFMNotaDeVenta {
        bancos.clear();
     }
     
+    
+    ////////////////////////////METODOS PARA PARTE TRAER COTIZACION
+      public void onRowSelectCotizacion(SelectEvent event) {
+        this.setNumCotizacion(((Cotizacion)event.getObject()).getNumCotizacion());
+        this.devolverCOt();
+     }
 
+      public void devolverCOt(){
+    
+          cotizacion=cot.buscarCotizacion(this.getNumCotizacion());
+          
+          this.setRut(cotizacion.getRutCliente());
+          this.traerCliente();
+          this.traspasarDetCotaTemporal(cotizacion);
+          this.hacerCalculosGenerales();    
+                 
+    }
+      
+      
+     public void traspasarDetCotaTemporal(Cotizacion cot){
+        
+        for(DetalleDeCotizacion det:detDao.findAlldetCot(cot.getNumCotizacion())){
+           
+            Producto linproducto =new Producto();
+            linproducto.setCodProducto(det.getCodProducto());
+            linproducto.setDescripcion(det.getDescripcion());
+            linproducto.setCantidad(det.getCantidad());
+            linproducto.setValorUnitario(det.getValorUnitario());
+            linproducto.setDescuento(det.getDescuento());
+            linproducto.setSubTotal(det.getSubtotal());
+            this.listatemporal.add(linproducto);
+        
+            
+        }
+        
+      }
+    ////////////////////////////METODOS PARA PARTE TRAER COTIZACION/////////////
+    ///////METODOS GENERALES 
+      
+    private String convFecha(Date fecha) {
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-YYYY");
+        return (sdf.format(fecha));
+    }
+    
+    public void imprimir(){
 
-    public void traerCliente(){
+        
+        System.out.println(estadoDelPago);
+        System.out.println(estadoDeFacturacion);
+        System.out.println(tipoDePago);
+        System.out.println(banco);
+        
+    
+    }
+    
+    ///////METODOS GENERALES //////////////////
+    
+    ////////////////////METODOS PARA PARTE CLIENTES
+    
+      public void traerCliente(){
         if(cli.buscarCliente(this.getRut())==null || this.cliente == null){
            mensaje.Mensajes(2); 
         }else{
@@ -165,22 +230,6 @@ public class JSFMNotaDeVenta {
     public void onRowSelectCli(SelectEvent event) {
         this.setRut(((Cliente)event.getObject()).getRutCliente());
         this.traerCliente();
-    }
-    
-    private String convFecha(Date fecha) {
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-YYYY");
-        return (sdf.format(fecha));
-    }
-    
-    public void imprimir(){
-
-        
-        System.out.println(estadoDelPago);
-        System.out.println(estadoDeFacturacion);
-        System.out.println(tipoDePago);
-        System.out.println(banco);
-        
-    
     }
     
     
@@ -213,6 +262,12 @@ public class JSFMNotaDeVenta {
         this.borrarcombos();
         this.llenarcombos();
     }
+    
+    
+     ////////////////////METODOS PARA PARTE CLIENTES ///////////////////////
+    
+    
+    ////////////////////METODOS PARA PARTE PRODUCTOS
     
     public void traerProducto(){
         
@@ -258,6 +313,19 @@ public class JSFMNotaDeVenta {
     }
     
     
+        public void limpiarProd(){
+                this.setCodigoProducto("");
+                this.setCodigo("");
+                this.setDescripcion("");
+                this.setPrecio(0.0);
+                this.setCantidad("0");
+                this.setDescuento(0.0);
+                this.setSubtotal(0.0);
+    }
+    ////////////////////METODOS PARA PARTE PRODUCTOS//////////////////////////
+    
+    
+    ////////////////////METODOS PARA PARTE LINEA DE PRODUCTOS TABLA
     public void ingresarLinea(){
         
        if(this.codigoProducto.equals("")){
@@ -276,7 +344,7 @@ public class JSFMNotaDeVenta {
             linproducto.setDescuento(this.getDescuento());
             linproducto.setSubTotal(this.getSubtotal());
 
-            if(this.buscarCodigoEnTemp(this.getCodigoProducto())==true){
+            if(this.buscarCodigoEnTemp()==true){
 
                int cant=listatemporal.get(indice).getCantidad();
                double subt=listatemporal.get(indice).getSubTotal();
@@ -291,55 +359,56 @@ public class JSFMNotaDeVenta {
             }
        }
             this.limpiarProd();
-            this.hacerCalculos();
+            this.hacerCalculosGenerales();
     }
     
     
     //metodo que busca en un arraylist que e la lista temporal de productos agregados en la nota de venta
     //devuelve un true si es encontrado
-    public boolean buscarCodigoEnTemp(String codigoProducto){
-    
+    public boolean buscarCodigoEnTemp(){
+        
         boolean respuesta = false;
         for(int i=0;i<listatemporal.size();i++){
-        
-            if(listatemporal.get(i).getCodProducto().equals(codigoProducto)){
+            
+            if(listatemporal.get(i).getCodProducto().equals(this.getCodigoProducto())){
             
                 indice=i;
                 respuesta=true;
-        
+                break;
+                
             }else{
                 respuesta=false;
             }
          
         }
+        
         return respuesta;
     }
     
     
-    public void limpiarProd(){
-                this.setCodigoProducto("");
-                this.setCodigo("");
-                this.setDescripcion("");
-                this.setPrecio(0.0);
-                this.setCantidad("0");
-                this.setDescuento(0.0);
-                this.setSubtotal(0.0);
-    }
+
     
    
     
     public void eliminarLinea(Producto producto){
         listatemporal.remove(producto);
-        this.hacerCalculos();
+        this.hacerCalculosGenerales();
     } 
     
+    
+    
+    ////////////////////METODOS PARA PARTE LINEA DE PRODUCTOS TABLA//////////////
+    
+    
+    
+       ////////////////////METODOS PARA PARTE CALCULOS Y BOTONES FINALES
     public void eliminarTodo(){
         
         listatemporal.clear();
     
     }
     
-    public void hacerCalculos(){
+    public void hacerCalculosGenerales(){
         
         double suma=0;
     
@@ -396,7 +465,7 @@ public class JSFMNotaDeVenta {
             not.init();
             not.insertar(nota);
             not.close();
-            this.setNumCot(Integer.toString(not.getMaxId()));
+            this.setNumNota(Integer.toString(not.getMaxId()));
             
             for( Producto p:listatemporal ){
         
@@ -415,8 +484,8 @@ public class JSFMNotaDeVenta {
                 detnot.close();
                 }
                 
-                mensaje.MensajesConParametro(1,this.getNumCot());
-                this.numcotTemp=Integer.parseInt(this.getNumCot());
+                mensaje.MensajesConParametro(1,this.getNumNota());
+                this.numcotTemp=Integer.parseInt(this.getNumNota());
                 this.limpiarNota();
                break;
             
@@ -427,18 +496,14 @@ public class JSFMNotaDeVenta {
         numero=0;
    
     }
-    
-    
-    
-    
-    
+
     public void limpiarNota(){
     
                 this.limpiarCliente();
                 this.limpiarProd();
                 this.eliminarTodo();
-                this.hacerCalculos();
-                this.setNumCot("");
+                this.hacerCalculosGenerales();
+                this.setNumNota("");
         
     }
    //--------------------------------------
@@ -448,7 +513,7 @@ public class JSFMNotaDeVenta {
         
         try{
             if(this.numcotTemp!=0){
-                reporte.reporte(this.numcotTemp);
+                reporte.reporteNotas(this.numcotTemp);
             }else{
                 mensaje.Mensajes(9);
             }
@@ -458,8 +523,12 @@ public class JSFMNotaDeVenta {
            mensaje.Mensajes(9);
         }
         
-        return "cotizaciones.faces";
+        return "notas.faces";
     } //--------------------------------------
+  
+     
+////////////////////METODOS PARA PARTE CALCULOS Y BOTONES FINALES/////////////////////
+     
      
      ////////////////////////////////////////////////metodos Get And Set
     
@@ -560,12 +629,12 @@ public class JSFMNotaDeVenta {
         this.total = total;
     }
 
-    public String getNumCot() {
-        return numCot;
+    public String getNumNota() {
+        return numNota;
     }
 
-    public void setNumCot(String numCot) {
-        this.numCot = numCot;
+    public void setNumNota(String numCot) {
+        this.numNota = numCot;
     }
 
     public StreamedContent getFile() {
@@ -759,6 +828,14 @@ public class JSFMNotaDeVenta {
 
     public void setListaCotizaciones(List<Cotizacion> listaCotizaciones) {
         this.listaCotizaciones = listaCotizaciones;
+    }
+
+    public int getNumCotizacion() {
+        return numCotizacion;
+    }
+
+    public void setNumCotizacion(int numCotizacion) {
+        this.numCotizacion = numCotizacion;
     }
 
     

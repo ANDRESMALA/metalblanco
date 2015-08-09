@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cotizacion" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b204db2d-787b-4a86-be1f-4f665e859101">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     NOTA_DE_VENTA.`num_nota_de_venta` AS NOTA_DE_VENTA_num_nota_de_venta,
+     NOTA_DE_VENTA.`fecha` AS NOTA_DE_VENTA_fecha,
+     NOTA_DE_VENTA.`rut_cliente` AS NOTA_DE_VENTA_rut_cliente,
+     NOTA_DE_VENTA.`razon_social` AS NOTA_DE_VENTA_razon_social,
+     NOTA_DE_VENTA.`nom_contacto` AS NOTA_DE_VENTA_nom_contacto,
+     NOTA_DE_VENTA.`direccion` AS NOTA_DE_VENTA_direccion,
+     NOTA_DE_VENTA.`telefono` AS NOTA_DE_VENTA_telefono,
+     NOTA_DE_VENTA.`email` AS NOTA_DE_VENTA_email,
+     NOTA_DE_VENTA.`comuna` AS NOTA_DE_VENTA_comuna,
+     NOTA_DE_VENTA.`ciudad` AS NOTA_DE_VENTA_ciudad,
+     NOTA_DE_VENTA.`vendedor` AS NOTA_DE_VENTA_vendedor,
+     NOTA_DE_VENTA.`observacion` AS NOTA_DE_VENTA_observacion,
+     NOTA_DE_VENTA.`neto` AS NOTA_DE_VENTA_neto,
+     NOTA_DE_VENTA.`iva` AS NOTA_DE_VENTA_iva,
+     NOTA_DE_VENTA.`total` AS NOTA_DE_VENTA_total,
+     NOTA_DE_VENTA.`descuento` AS NOTA_DE_VENTA_descuento,
+     NOTA_DE_VENTA.`estado_del_pago` AS NOTA_DE_VENTA_estado_del_pago,
+     NOTA_DE_VENTA.`estado_facturacion` AS NOTA_DE_VENTA_estado_facturacion,
+     DETALLE_NOTA_DE_VENTA.`cod_producto` AS DETALLE_NOTA_DE_VENTA_cod_producto,
+     DETALLE_NOTA_DE_VENTA.`descripcion` AS DETALLE_NOTA_DE_VENTA_descripcion,
+     DETALLE_NOTA_DE_VENTA.`cantidad` AS DETALLE_NOTA_DE_VENTA_cantidad,
+     DETALLE_NOTA_DE_VENTA.`valor_unitario` AS DETALLE_NOTA_DE_VENTA_valor_unitario,
+     DETALLE_NOTA_DE_VENTA.`descuento` AS DETALLE_NOTA_DE_VENTA_descuento,
+     DETALLE_NOTA_DE_VENTA.`subtotal` AS DETALLE_NOTA_DE_VENTA_subtotal
+FROM
+     `NOTA_DE_VENTA` NOTA_DE_VENTA INNER JOIN `DETALLE_NOTA_DE_VENTA` DETALLE_NOTA_DE_VENTA ON NOTA_DE_VENTA.`num_nota_de_venta` = DETALLE_NOTA_DE_VENTA.`NOTA_DE_VENTA_num_nota_de_venta`
+WHERE
+     NOTA_DE_VENTA.`num_nota_de_venta` = $P{numero}]]>
+	</queryString>
+	<field name="NOTA_DE_VENTA_num_nota_de_venta" class="java.lang.Integer"/>
+	<field name="NOTA_DE_VENTA_fecha" class="java.sql.Timestamp"/>
+	<field name="NOTA_DE_VENTA_rut_cliente" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_razon_social" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_nom_contacto" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_direccion" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_telefono" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_email" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_comuna" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_ciudad" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_vendedor" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_observacion" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_neto" class="java.lang.Double"/>
+	<field name="NOTA_DE_VENTA_iva" class="java.lang.Double"/>
+	<field name="NOTA_DE_VENTA_total" class="java.lang.Double"/>
+	<field name="NOTA_DE_VENTA_descuento" class="java.lang.Double"/>
+	<field name="NOTA_DE_VENTA_estado_del_pago" class="java.lang.String"/>
+	<field name="NOTA_DE_VENTA_estado_facturacion" class="java.lang.String"/>
+	<field name="DETALLE_NOTA_DE_VENTA_cod_producto" class="java.lang.String"/>
+	<field name="DETALLE_NOTA_DE_VENTA_descripcion" class="java.lang.String"/>
+	<field name="DETALLE_NOTA_DE_VENTA_cantidad" class="java.lang.Integer"/>
+	<field name="DETALLE_NOTA_DE_VENTA_valor_unitario" class="java.lang.Double"/>
+	<field name="DETALLE_NOTA_DE_VENTA_descuento" class="java.lang.Double"/>
+	<field name="DETALLE_NOTA_DE_VENTA_subtotal" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="77" splitType="Stretch">
+			<textField>
+				<reportElement x="306" y="25" width="100" height="20" uuid="c6675cf1-c595-4301-9aaf-408700384b54"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_num_nota_de_venta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="206" y="25" width="100" height="20" uuid="00d617c6-0a68-4058-bc8f-dc0ad9800cb1"/>
+				<text><![CDATA[NOTA DE VENTA  Nª]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="109" splitType="Stretch">
+			<rectangle>
+				<reportElement x="5" y="3" width="567" height="102" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="d3c51951-d002-4deb-90a2-afa99ec154a5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="379" y="69" width="57" height="20" forecolor="#000099" uuid="9504672f-cef7-459d-9916-c0a8e4f8442a"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GIRO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="29" width="74" height="20" forecolor="#000099" uuid="cc651d87-920f-4e55-8e5b-5bfeeb4360cc"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="49" width="74" height="20" forecolor="#000099" uuid="4cd83e9e-16fa-4b29-b986-0183a228847d"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CIUDAD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="69" width="74" height="20" forecolor="#000099" uuid="69229aec-06c1-4540-8f0a-ecee581816f5"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TELEFONO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="29" width="57" height="20" forecolor="#000099" uuid="c52824b7-c3d3-4cdd-b683-bd2d27017191"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="9" width="57" height="20" forecolor="#000099" uuid="1ab63a18-5e2a-4cd0-8fae-68a4bba4d27b"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUT:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="49" width="57" height="20" forecolor="#000099" uuid="585e69a9-4252-40ed-a3d1-3466480f6e4e"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMUNA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="9" width="74" height="20" forecolor="#000099" uuid="e494e2f4-693b-4de9-9979-5ed4bffaeb65"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SEÑOR(ES):]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="101" y="9" width="266" height="20" uuid="9c29d710-a274-4547-8279-afed1b1b7efc"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_razon_social}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="436" y="9" width="122" height="20" uuid="2bef4da9-3214-4200-94d3-8c2266fd28ac"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_rut_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="29" width="266" height="20" uuid="f0b27db2-e763-4291-bcb8-6756f3f5952e"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="49" width="266" height="20" uuid="e2fca871-3d46-4069-8323-62035e4a2bf6"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_ciudad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="69" width="266" height="20" uuid="856bfb2d-ef7b-4365-894a-5279468b8c13"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="437" y="29" width="121" height="20" uuid="42982c1c-caf2-4517-ae51-3f3e9deff68d"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="437" y="49" width="121" height="20" uuid="3671b2ea-58e2-4b1a-b806-ec3f2d75c392"/>
+				<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_comuna}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="5" y="0" width="567" height="20" backcolor="#CCCCCC" uuid="2f27ff6e-4422-4a5b-832f-0c9773c43cea"/>
+			</frame>
+			<staticText>
+				<reportElement x="212" y="0" width="52" height="20" forecolor="#000000" uuid="9ef4d6d7-2024-4cb6-9e5d-eb036b8550e7"/>
+				<textElement>
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="356" y="0" width="80" height="20" forecolor="#000000" uuid="eba9169f-a446-4aef-8f5e-9ae4e7d305d4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P. UNIT]]></text>
+			</staticText>
+			<line>
+				<reportElement x="135" y="0" width="1" height="20" forecolor="#000099" uuid="2d03d50d-abb5-449c-832d-dee9fdd6c327"/>
+			</line>
+			<line>
+				<reportElement x="436" y="1" width="1" height="19" forecolor="#000099" uuid="0ae26cd2-f10f-4468-b12f-21d5b0e2c9db"/>
+			</line>
+			<staticText>
+				<reportElement x="511" y="0" width="47" height="20" forecolor="#000000" uuid="9417bb20-f3d0-4aa2-8826-e22e6bc47452"/>
+				<textElement textAlignment="Center">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<line>
+				<reportElement x="350" y="0" width="1" height="20" forecolor="#000099" uuid="4fa0697c-9e50-4728-b9b5-6df07a92fe01"/>
+			</line>
+			<staticText>
+				<reportElement x="82" y="0" width="41" height="20" forecolor="#000000" uuid="44655780-c1c3-42bb-9603-17871b40a26a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANT.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="498" y="1" width="1" height="19" forecolor="#000099" uuid="752f7156-cde8-411d-822f-5912737b3639"/>
+			</line>
+			<staticText>
+				<reportElement x="431" y="0" width="80" height="20" forecolor="#000000" uuid="02603f6c-bf10-4a34-8a90-6d9ddeae0fb5"/>
+				<textElement textAlignment="Center">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESC.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="71" y="0" width="1" height="20" forecolor="#000099" uuid="05b67286-29e2-4f50-8eff-d9d94320b2a3"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="0" width="41" height="20" forecolor="#000000" uuid="241b0529-79be-466a-a8a7-79c29439f646"/>
+				<textElement textAlignment="Center">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COD.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="5" y="10" width="66" height="20" uuid="ca385b62-14c9-4296-a725-24ae2648ca0c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_NOTA_DE_VENTA_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="10" width="64" height="20" uuid="cf6167d5-cf19-452d-af77-e0c8697af165"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_NOTA_DE_VENTA_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="136" y="10" width="214" height="20" uuid="fcf571c1-370a-495c-8f39-33653b6752eb"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_NOTA_DE_VENTA_descripcion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="351" y="10" width="85" height="20" uuid="ab359cba-1daa-4258-b1d1-f8f97eb41d47"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_NOTA_DE_VENTA_valor_unitario}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="436" y="10" width="62" height="20" uuid="e304edad-bf8e-406e-b14c-b34c8c5c700c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_NOTA_DE_VENTA_descuento}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="499" y="10" width="73" height="20" uuid="da547b95-8739-4f7b-8a16-6280a61da6bd"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_NOTA_DE_VENTA_subtotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="70" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="5" y="0" width="567" height="68" backcolor="#999999" uuid="1d2e5dba-ed90-4806-901b-be12aed729d8"/>
+				<textField pattern="#,##0">
+					<reportElement x="481" y="5" width="86" height="21" uuid="e6c8a35c-3efe-40c3-8638-4c900effe024"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_neto}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement x="481" y="26" width="86" height="20" uuid="6e77960d-44ee-47c7-836a-14a965d13fc7"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_iva}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement x="481" y="45" width="86" height="20" uuid="fb168892-d13c-44b9-a04f-5b622aaaeb49"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{NOTA_DE_VENTA_total}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement x="406" y="5" width="80" height="20" forecolor="#000099" uuid="1efda196-355c-4abc-8f74-ba3afe66fc06"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NETO    $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="45" width="80" height="20" forecolor="#000099" uuid="0ec3eae8-87f2-4063-b503-6ac10f68a489"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL    $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="26" width="80" height="20" forecolor="#000099" uuid="d6df4baf-f816-403d-84b5-986f00ebc813"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Verdana" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IVA       $]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -43,60 +43,69 @@ public class Reportes implements Serializable{
     }
     
     public String reporte(int numero){
-   String url ="";
-       
-   try {
+        String url ="";
 
-        Map parametro=new HashMap(); 
-        parametro.put("numero",numero);
-        String reports = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.jrxml");
-        JasperReport report = JasperCompileManager.compileReport(reports);
-        JasperPrint print = JasperFillManager.fillReport(report,parametro,this.getCon());
-//        JasperExportManager.exportReportToHtmlFile(print,FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.html"));
-//        JasperExportManager.exportReportToPdfFile(print,FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.pdf"));
-        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-		response.addHeader("Content-disposition","attachment; filename=Cotizacion Nº"+numero+".pdf");
-		ServletOutputStream stream = response.getOutputStream();
-		
-		JasperExportManager.exportReportToPdfStream(print, stream);
-		stream.flush();
-		stream.close();
-		FacesContext.getCurrentInstance().responseComplete();
-       
-       
-//       url ="../resources/reporte/Cotizacion.pdf";
-       
-       
-        }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-         return url;
+        try {
+
+             Map parametro=new HashMap(); 
+             parametro.put("numero",numero);
+             String reports = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.jrxml");
+             JasperReport report = JasperCompileManager.compileReport(reports);
+             JasperPrint print = JasperFillManager.fillReport(report,parametro,this.getCon());
+     //        JasperExportManager.exportReportToHtmlFile(print,FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.html"));
+     //        JasperExportManager.exportReportToPdfFile(print,FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.pdf"));
+             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+                     response.addHeader("Content-disposition","attachment; filename=Cotizacion Nº"+numero+".pdf");
+                     ServletOutputStream stream = response.getOutputStream();
+
+                     JasperExportManager.exportReportToPdfStream(print, stream);
+                     stream.flush();
+                     stream.close();
+                     FacesContext.getCurrentInstance().responseComplete();
+
+
+     //       url ="../resources/reporte/Cotizacion.pdf";
+
+
+             }
+         catch (Exception e) {
+           e.printStackTrace();
+         }
+              return url;
+
+         }
+
     
-    }
-//    public void reporte3(String fi,String ff){
-//   
-//       
-//   try {
-//       
-//             
-//  
-//        Map parametro=new HashMap(); 
-//        parametro.put("FECHAINICIO",fi); 
-//        parametro.put("FECHAFIN",ff); 
-//       JasperReport report = JasperCompileManager.compileReport("Listado.jrxml");
-//      JasperPrint print = JasperFillManager.fillReport(report,parametro,this.getCon());
-//      
-//      JasperViewer view=new JasperViewer(print,false);
-//      view.setTitle("listado");
-//      view.setExtendedState(Frame.MAXIMIZED_BOTH);
-//      view.setVisible(true);
-//      JasperExportManager.exportReportToPdfFile(print,"listado.pdf");
-//        
-//    }
-//    catch (Exception e) {
-//      e.printStackTrace();
-//    }
-//    
-//    }
+    public String reporteNotas(int numero){
+        String url ="";
+
+        try {
+
+             Map parametro=new HashMap(); 
+             parametro.put("numero",numero);
+             String reports = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Notas.jrxml");
+             JasperReport report = JasperCompileManager.compileReport(reports);
+             JasperPrint print = JasperFillManager.fillReport(report,parametro,this.getCon());
+     //        JasperExportManager.exportReportToHtmlFile(print,FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.html"));
+     //        JasperExportManager.exportReportToPdfFile(print,FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/reporte/Cotizacion.pdf"));
+             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+                     response.addHeader("Content-disposition","attachment; filename=Nota de Venta Nº"+numero+".pdf");
+                     ServletOutputStream stream = response.getOutputStream();
+
+                     JasperExportManager.exportReportToPdfStream(print, stream);
+                     stream.flush();
+                     stream.close();
+                     FacesContext.getCurrentInstance().responseComplete();
+
+
+     //       url ="../resources/reporte/Cotizacion.pdf";
+
+
+             }
+         catch (Exception e) {
+           e.printStackTrace();
+         }
+              return url;
+
+         }
 }
